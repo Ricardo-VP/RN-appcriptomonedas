@@ -6,7 +6,8 @@ const Header = () => (
  
 const styles = StyleSheet.create({
     encabezado: {
-        paddingTop: Platform.OS === 'ios' ? 50 : 20
+        paddingTop: Platform.OS === 'ios' ? 50 : 20,
+        fontFamily: 'Lato-Black'
     }
 });
 
