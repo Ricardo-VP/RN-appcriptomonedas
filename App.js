@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Image, View, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  View,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import axios from 'axios';
 import Header from './components/header';
 import Formulario from './components/formulario';
@@ -9,18 +15,30 @@ const App = () => {
   const [criptomoneda, setCriptomoneda] = useState('');
   const [consultarAPI, setConsultarAPI] = useState(false);
   const [resultado, setResultado] = useState({});
+  const [cargando, setCargando] = useState(false);
   useEffect(() => {
     const cotizarCriptomoneda = async () => {
       if (consultarAPI) {
         // CONSULTAR LA API PARA COTIZAR
         const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`;
         const resultado = await axios.get(url);
-        setResultado(resultado.data.DISPLAY[criptomoneda][moneda]);
-        setConsultarAPI(false);
+        setCargando(true);
+        // Ocultar el spinner y mostrar el resultado
+        setTimeout(() => {
+          setResultado(resultado.data.DISPLAY[criptomoneda][moneda]);
+          setConsultarAPI(false);
+          setCargando(false);
+        }, 1500);
       }
     };
     cotizarCriptomoneda();
   }, [consultarAPI]);
+  // MOSTRAR EL SPINNER O EL RESULTADO
+  const componente = cargando ? (
+    <ActivityIndicator size="large" color="#5E49E2" />
+  ) : (
+    <Cotizacion resultado={resultado} />
+  );
   return (
     <>
       <ScrollView>
@@ -38,7 +56,7 @@ const App = () => {
             setConsultarAPI={setConsultarAPI}
           />
         </View>
-        <Cotizacion resultado={resultado} />
+        <View style={{marginTop: 20}}>{componente}</View>
       </ScrollView>
     </>
   );
