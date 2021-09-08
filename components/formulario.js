@@ -1,11 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, TouchableHighlight} from 'react-native';
+import {Text, View, StyleSheet, TouchableHighlight, Alert} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import axios from 'axios';
-const Formulario = () => {
-  const [moneda, setMoneda] = useState('');
-  const [criptomoneda, setCriptomoneda] = useState('');
-  const [criptomonedas, setCriptomonedas] = useState('');
+const Formulario = ({
+  moneda,
+  criptomoneda,
+  setCriptomoneda,
+  setMoneda,
+  setConsultarAPI,
+}) => {
+  const [criptomonedas, setCriptomonedas] = useState([]);
 
   useEffect(() => {
     const consultarAPI = async () => {
@@ -23,8 +27,18 @@ const Formulario = () => {
   const obtenerCriptomoneda = cripto => {
     setCriptomoneda(cripto);
   };
+  // FUNCIÓN DE COTIZACIÓN
   const cotizarPrecio = () => {
-    console.log('cotizando..');
+    if (moneda.trim() === '' || criptomoneda.trim() === '') {
+      mostrarAlerta();
+      return;
+    }
+    // cambiar el state de consultar API
+    setConsultarAPI(true);
+  };
+  // ALERTA
+  const mostrarAlerta = () => {
+    Alert.alert('Error...', 'Ambos campos son obligatorios', [{text: 'OK'}]);
   };
   return (
     <View>
